@@ -260,4 +260,4 @@ def test_rubric_score_safety_violation() -> None:
     rubric = build_rubric()
     result = rubric.score(s, task, actions)
     assert result["safety_violation"] is True
-    assert result["total"] < 0.5
+    assert result["total"] == 0.0
