@@ -416,5 +416,5 @@ def build_rubric() -> Rubric:
             safety_penalty,
             partial_progress_reward,
         ],
-        weights=[1.0, 0.1, 0.2, 0.3, 0.2, 0.1],
+        weights=[1.0, 0.1, 0.2, 0.2, 0.3, 0.1],
     )
