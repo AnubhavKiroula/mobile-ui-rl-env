@@ -4,6 +4,7 @@ Tests reset, step, run, action parsing, max step truncation, and loader namespac
 """
 
 import json
+# pyrefly: ignore [missing-import]
 import pytest
 from mobile_ui_env.env import MobileUIEnv, load_environment
 from mobile_ui_env.dataset import get_task_by_id
