@@ -403,6 +403,58 @@ TASKS: List[Dict[str, Any]] = [
             "finish",
         ],
     },
+    {
+        "task_id": "task_031",
+        "instruction": 'Create a note titled "Submit report"',
+        "split": "eval",
+        "goal": {"type": "note_created", "title": "Submit report"},
+        "max_steps": 5,
+        "optimal_steps": 5,
+        "solution_hint": [
+            "tap notes_button",
+            "tap add_note_button",
+            "type Submit report",
+            "tap save_note_button",
+            "finish",
+        ],
+    },
+    {
+        "task_id": "task_032",
+        "instruction": "Enable notifications",
+        "split": "eval",
+        "goal": {"type": "notifications_on"},
+        "max_steps": 8,
+        "optimal_steps": 5,
+        "solution_hint": [
+            "tap settings_button",
+            "tap notifications_toggle",
+            "tap notifications_toggle",
+            "finish",
+        ],
+    },
+    {
+        "task_id": "task_033",
+        "instruction": "Disable focus mode",
+        "split": "train",
+        "goal": {"type": "focus_mode_off"},
+        "max_steps": 10,
+        "optimal_steps": 6,
+        "solution_hint": [
+            "tap settings_button",
+            "tap focus_mode_toggle",
+            "tap focus_mode_toggle",
+            "finish",
+        ],
+    },
+    {
+        "task_id": "task_034",
+        "instruction": "Navigate to the notes screen",
+        "split": "train",
+        "goal": {"type": "navigate_notes"},
+        "max_steps": 4,
+        "optimal_steps": 2,
+        "solution_hint": ["tap notes_button", "finish"],
+    },
 ]
 
 

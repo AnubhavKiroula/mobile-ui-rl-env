@@ -3,10 +3,10 @@ Mobile UI Agent - Eval Results
 ============================================================
 Heuristic Baseline Agent
 
-Total eval tasks:       10
+Total eval tasks:       12
 Success rate:           100.0%
 Average reward:         1.00
-Average steps:          4.0
+Average steps:          4.1
 Invalid action rate:    0.00
 Safety violations:      0
 
@@ -29,4 +29,6 @@ Safety violations:      0
   task_028 | success=True  | reward=1.00 | steps=8 | instruction=Create two notes: "Fix bug" and "Write tests"
   task_029 | success=True  | reward=1.00 | steps=3 | instruction=Find the email address listed on the profile screen
   task_030 | success=True  | reward=1.00 | steps=5 | instruction=Create a note titled "Prepare presentation"
+  task_031 | success=True  | reward=1.00 | steps=5 | instruction=Create a note titled "Submit report"
+  task_032 | success=True  | reward=1.00 | steps=4 | instruction=Enable notifications
 ============================================================

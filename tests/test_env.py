@@ -133,8 +133,8 @@ def test_load_environment_structure() -> None:
     assert hasattr(env_config, "eval_dataset")
     assert hasattr(env_config, "rubric")
     assert hasattr(env_config, "make_env")
-    assert len(env_config.dataset) == 20
-    assert len(env_config.eval_dataset) == 10
+    assert len(env_config.dataset) == 22
+    assert len(env_config.eval_dataset) == 12
 
 
 def test_load_environment_make_env() -> None:
