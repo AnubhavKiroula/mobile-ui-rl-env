@@ -4,7 +4,7 @@ RL-style mobile UI agent environment built with Prime Intellect Verifiers concep
 
 ## 1. Overview
 
-`mobile_ui_env` is a single-turn reinforcement learning environment that simulates a simple mobile app with four screens — home, notes, settings, and profile. An agent receives a natural-language instruction (e.g. *"Create a note titled Buy milk"*), produces a sequence of JSON-formatted actions (`tap`, `type`, `back`, `finish`), and receives a scalar reward computed by a weighted rubric. The environment is designed to be structurally compatible with the [Prime Intellect Verifiers](https://github.com/verifiers-for-code/verifiers) framework: it exposes a `load_environment()` entry point that returns datasets, a rubric, and an env factory, mirroring the interface that PRIME-RL training loops expect. The 30-task dataset (20 train / 10 eval) covers note creation, settings toggling, information retrieval, navigation safety, and multi-step sequencing.
+`mobile_ui_env` is a single-turn reinforcement learning environment that simulates a simple mobile app with four screens — home, notes, settings, and profile. An agent receives a natural-language instruction (e.g. *"Create a note titled Buy milk"*), produces a sequence of JSON-formatted actions (`tap`, `type`, `back`, `finish`), and receives a scalar reward computed by a weighted rubric. The environment is designed to be structurally compatible with the [Prime Intellect Verifiers](https://github.com/verifiers-for-code/verifiers) framework: it exposes a `load_environment()` entry point that returns datasets, a rubric, and an env factory, mirroring the interface that PRIME-RL training loops expect. The 34-task dataset (22 train / 12 eval) covers note creation, settings toggling, information retrieval, navigation safety, and multi-step sequencing.
 
 ## 2. Project Structure
 
@@ -20,7 +20,7 @@ mobile-ui-rl-env/
 │   ├── __init__.py                # Exports: AppState, MobileUIEnv, load_environment
 │   ├── state.py                   # AppState dataclass — screen, notes, toggles, counters
 │   ├── actions.py                 # parse_actions, validate_action, apply_action, execute_action
-│   ├── dataset.py                 # 30 tasks (TASKS list), build_dataset, get_task_by_id, stats
+│   ├── dataset.py                 # 34 tasks (TASKS list), build_dataset, get_task_by_id, stats
 │   ├── rubric.py                  # 6 reward/penalty functions, Rubric class, build_rubric
 │   └── env.py                     # MobileUIEnv (reset/step/run), load_environment()
 │
@@ -290,10 +290,10 @@ Mobile UI Agent - Eval Results
 ============================================================
 Heuristic Baseline Agent
 
-Total eval tasks:       10
+Total eval tasks:       12
 Success rate:           100.0%
 Average reward:         1.00
-Average steps:          4.0
+Average steps:          4.1
 Invalid action rate:    0.00
 Safety violations:      0
 
@@ -316,8 +316,11 @@ Safety violations:      0
   task_028 | success=True  | reward=1.00 | steps=8 | instruction=Create two notes: "Fix bug" and "Write tests"
   task_029 | success=True  | reward=1.00 | steps=3 | instruction=Find the email address listed on the profile screen
   task_030 | success=True  | reward=1.00 | steps=5 | instruction=Create a note titled "Prepare presentation"
+  task_031 | success=True  | reward=1.00 | steps=5 | instruction=Create a note titled "Submit report"
+  task_032 | success=True  | reward=1.00 | steps=4 | instruction=Enable notifications
 ============================================================
 ```
+
 
 The heuristic baseline achieves 100% success across all 10 eval tasks, as expected — it is a rule-based agent that produces the exact optimal action sequence for each goal type. The `partial_progress_reward` averages 0.00 because it returns 0.0 when `success_reward` is already 1.0 (no partial credit needed for successful episodes). The `efficiency_reward` averages 1.00 because every task is completed in exactly the optimal number of steps.
 
@@ -334,7 +337,7 @@ Running with `python run_eval.py --dummy` produces 0.0% success rate (the dummy 
 | **No visual observation** | Text-only observations avoid vision model dependency | Screenshot or accessibility tree observation, possibly multi-modal |
 | **Deterministic state machine** | No latency, no flaky transitions; enables exact unit testing | Emulator with animation delays, wait-for-idle polling, retry logic |
 | **No persistence/replay buffer** | Episodes are independent; no experience replay | Replay buffer for off-policy RL, or on-policy rollout storage for PPO |
-| **30-task static dataset** | Small enough to hand-verify all goal types and edge cases | Procedurally generated tasks with varying app states, user data, and screen layouts |
+| **34-task static dataset** | Small enough to hand-verify all goal types and edge cases | Procedurally generated tasks with varying app states, user data, and screen layouts |
 | **Synchronous execution** | Single-threaded, blocking action execution | Async env with batched rollouts across multiple emulator instances |
 | **Case-insensitive matching** | Robustness to capitalization in note titles | Fuzzy or semantic matching (embedding similarity) for more realistic verification |
 
