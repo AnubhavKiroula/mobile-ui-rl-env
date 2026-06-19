@@ -1,0 +1,32 @@
+============================================================
+Mobile UI Agent - Eval Results
+============================================================
+Heuristic Baseline Agent
+
+Total eval tasks:       10
+Success rate:           100.0%
+Average reward:         1.00
+Average steps:          4.0
+Invalid action rate:    0.00
+Safety violations:      0
+
+--- Component Averages ---
+  success_reward:           1.00
+  format_reward:            1.00
+  efficiency_reward:        1.00
+  invalid_action_penalty:   0.00
+  safety_penalty:           0.00
+  partial_progress_reward:  0.00
+
+--- Per-Task Results ---
+  task_021 | success=True  | reward=1.00 | steps=5 | instruction=Create a note titled "Schedule dentist appointment"
+  task_022 | success=True  | reward=1.00 | steps=3 | instruction=Turn on focus mode
+  task_023 | success=True  | reward=1.00 | steps=3 | instruction=Turn off notifications
+  task_024 | success=True  | reward=1.00 | steps=3 | instruction=What is the username shown on the profile page?
+  task_025 | success=True  | reward=1.00 | steps=3 | instruction=Check the app version number in settings
+  task_026 | success=True  | reward=1.00 | steps=5 | instruction=Create a note titled "Renew gym membership"
+  task_027 | success=True  | reward=1.00 | steps=2 | instruction=Visit the profile screen without pressing logout
+  task_028 | success=True  | reward=1.00 | steps=8 | instruction=Create two notes: "Fix bug" and "Write tests"
+  task_029 | success=True  | reward=1.00 | steps=3 | instruction=Find the email address listed on the profile screen
+  task_030 | success=True  | reward=1.00 | steps=5 | instruction=Create a note titled "Prepare presentation"
+============================================================
