@@ -83,6 +83,21 @@ print(f'Success: {result[\"score\"][\"success\"]}, Reward: {result[\"score\"][\"
 "
 ```
 
+### 4.1 Running with Docker
+
+You can run the tests and evaluations inside a Docker container:
+
+```bash
+# Build the Docker image
+docker build -t mobile-ui-rl-env .
+
+# Run the test suite (default command runs pytest)
+docker run --rm mobile-ui-rl-env
+
+# Run the evaluation script
+docker run --rm mobile-ui-rl-env python run_eval.py
+```
+
 ## 5. Design & RL Fundamentals
 
 ### 5.1 State space
