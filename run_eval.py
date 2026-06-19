@@ -249,7 +249,7 @@ def main() -> None:
         reward_val = r["score"]["total"]
         steps_val = r["state"]["step_count"]
         print(
-            f"  {r['task_id']} | success={success_status:<5} | "
+            f"  {r['task_id']} | success={str(success_status):<5} | "
             f"reward={reward_val:.2f} | steps={steps_val} | "
             f"instruction={r['instruction']}"
         )
