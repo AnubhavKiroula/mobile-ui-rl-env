@@ -3,6 +3,7 @@
 Tests navigation, validation, parsing, safety penalties, toggles, and state modifications.
 """
 
+# pyrefly: ignore [missing-import]
 import pytest
 from mobile_ui_env.state import AppState
 from mobile_ui_env.actions import (

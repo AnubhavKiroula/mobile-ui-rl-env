@@ -3,6 +3,7 @@
 Tests success verification, formatting checks, efficiency metrics, penalties, and overall rubric scores.
 """
 
+# pyrefly: ignore [missing-import]
 import pytest
 from mobile_ui_env.state import AppState
 from mobile_ui_env.actions import execute_action
