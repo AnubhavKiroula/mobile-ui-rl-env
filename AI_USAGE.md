@@ -51,21 +51,59 @@ diff and assuming it was correct.
 
 ## 3. What I modified myself
 
-The main issue I caught: the first version of the action-handling code did not
-have proper error handling for invalid input. When I manually tested edge cases
-(bad/nonexistent targets, malformed actions) instead of just the happy path, the
-environment crashed instead of returning `valid=False` gracefully. I traced this
-by deliberately running invalid-input commands myself, identified that this broke
-the "must not crash on invalid actions" requirement from the assignment, and
-re-prompted Antigravity specifically to fix error handling for worst-case /
-malformed input, then re-ran the same edge cases to confirm it no longer crashed
-and degraded safely instead.
+**Reward weight mismatch in `rubric.py`.** This was the most significant issue I
+caught, and it took several rounds of pushing back before it was actually resolved
+correctly. After Phase 5 was complete, I ran a full read-only audit of the codebase
+against the assignment spec. The audit flagged that `build_rubric()`'s `weights`
+array didn't match the coefficients used in the hardcoded `total` formula inside
+`Rubric.score()` — specifically, the weights for `invalid_action_penalty` (should
+be 0.2) and `safety_penalty` (should be 0.3) were swapped.
 
-Outside of that, I didn't need to rewrite logic myself, but I treated "the AI
-says it's done" as a starting point, not a finish line, and verified actual
-behavior against the assignment's requirements (especially section 9's required
-tests and the "invalid actions should not crash the environment" rule in
-section 3) before moving to the next phase.
+I didn't accept this at face value either way. I asked Antigravity to confirm the
+bug independently before touching any code, by printing the actual weights array
+and the actual formula coefficients side by side. It confirmed the mismatch was
+real, fixed the weights array, and reported "WEIGHT FIX VERIFIED" with a test case.
+
+I checked that verification output myself by hand-summing the reported
+`weighted_components` values. They summed to 0.45, but the reported `total` was
+0.0 — a discrepancy the agent's own "verified" claim had missed. I pushed back and
+asked it to show me the literal source of the `total` calculation rather than
+explain it in prose. It turned out `total` isn't a sum of `weighted_components` at
+all — it's a separate subtractive formula (`success + 0.1*format + 0.2*efficiency +
+0.1*partial - 0.2*invalid_pen - 0.3*safety_pen`, then clipped to `[0, 1]`), which is
+a valid design but meant the two values were never supposed to match in the first
+place. I verified this formula by hand-computing the expected total for the test
+scenario myself (`-0.19`, clipping to `0.0`) and got the same result independently.
+
+While checking this, I also asked whether the existing test
+(`test_rubric_score_safety_violation`, which asserted `total < 0.5`) would actually
+have caught the original weight-swap bug. It wouldn't have — under several broken
+weight/sign scenarios I worked through, `total` still lands under 0.5, so the bound
+was too loose to be real evidence the rubric was correct. I had the assertion
+tightened to the exact expected value (`total == 0.0`) instead, with the expected
+value hand-computed and independently verified rather than just asserted, and
+confirmed it doesn't introduce floating-point flakiness for this case before
+accepting it.
+
+**Crash on invalid input.** Separately, in an earlier phase, I manually tested edge
+cases (bad/nonexistent targets, malformed actions) instead of just the happy path,
+and found the environment crashed instead of returning `valid=False` gracefully.
+I traced this by deliberately running invalid-input commands myself, identified
+that this broke the "must not crash on invalid actions" requirement from the
+assignment, and re-prompted Antigravity specifically to fix error handling for
+worst-case input, then re-ran the same edge cases to confirm it degraded safely
+instead of crashing.
+
+In general, I treated "the AI says it's verified" as a claim to check, not a fact
+to accept — every "done" or "verified" message in this project was followed by me
+either re-running the relevant command myself or independently redoing the
+underlying arithmetic before moving on.
+
+**Docker build.** The agent that wrote the Dockerfile didn't have a running Docker
+desktop in its environment, so it could not build or run the container itself and
+said so explicitly rather than claiming success. I built and ran the container
+myself afterward — `docker build` succeeded, the image shows up in Docker Desktop,
+and the test/eval commands inside the container ran successfully.
 
 ## 4. What I learned
 
@@ -84,8 +122,23 @@ section 3) before moving to the next phase.
   showed up because I deliberately tested bad input instead of just the
   documented happy path. That reinforced that verifying AI-generated code means
   actively trying to break it, not just confirming the intended case works.
+- **An agent saying "verified" is not the same as something being verified**: the
+  reward-weight bug taught me this directly. The agent printed "WEIGHT FIX
+  VERIFIED" with output that, on inspection, didn't actually add up — the reported
+  total didn't match the sum of the reported weighted components. The fix itself
+  turned out to be correct, but the verification step needed a second layer of
+  scrutiny (hand-computing the expected value myself) before I could trust it. I
+  now treat any agent claim of "passed," "verified," or "confirmed" as a starting
+  point for my own check, not as the check itself.
+- **Loose test assertions can hide real bugs**: `total < 0.5` felt like a
+  reasonable safety-violation test until I worked through what values would
+  satisfy it. A correctly-implemented rubric, a sign-flipped rubric, and a rubric
+  that silently ignored the safety penalty entirely would all have passed that
+  assertion. Tightening it to an exact, hand-verified value (`total == 0.0`) was a
+  small change, but it's the difference between a test that documents intent and
+  one that would actually catch a regression.
 - **Prompt precision compounds across phases**: being explicit about deliverables,
   required tests, and constraints in every phase prompt (rather than one vague
-  ask) meant Antigravity's output needed very little correction overall — the
-  one real bug I found was specifically because I tested an edge case the
-  original prompt hadn't explicitly called out.
+  ask) meant Antigravity's output needed very little correction overall — most of
+  the issues I found were specifically because I tested edge cases or re-derived
+  numbers the original prompts hadn't explicitly forced a check on.
